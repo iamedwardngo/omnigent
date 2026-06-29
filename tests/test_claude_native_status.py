@@ -153,9 +153,10 @@ def test_status_wrapper_chains_to_user_command(
     )
     assert rc == 0
     assert len(captured_calls) == 1
-    assert captured_calls[0]["args"] == ("echo claude-hud",)
+    # SECURITY: Chained command must be tokenized and executed without shell.
+    assert captured_calls[0]["args"] == (["echo", "claude-hud"],)
     assert captured_calls[0]["kwargs"]["input"] == stdin
-    assert captured_calls[0]["kwargs"]["shell"] is True
+    assert captured_calls[0]["kwargs"]["shell"] is False
     out, _err = capsys.readouterr()
     assert "claude-hud line" in out
 

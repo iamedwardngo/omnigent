@@ -14,6 +14,7 @@ import argparse
 import contextlib
 import json
 import os
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -142,11 +143,14 @@ def _chain(command: str, stdin_payload: str) -> None:
         Code. Forwarded verbatim so the chained command sees exactly
         what Claude Code sent.
     """
+    # SECURITY: Command injection via shell=True with user-controlled command.
+    # FIX: Tokenize the command string and execute directly without a shell.
+    # REF: https://cwe.mitre.org/data/definitions/78.html
     try:
         proc = subprocess.run(
-            command,
+            shlex.split(command),
             input=stdin_payload,
-            shell=True,
+            shell=False,
             capture_output=True,
             text=True,
             check=False,
