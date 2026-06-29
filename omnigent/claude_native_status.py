@@ -135,13 +135,12 @@ def _write_context_atomic(bridge_dir: Path, payload: dict[str, object]) -> None:
 
 def _chain(command: str, stdin_payload: str) -> None:
     """
-    Exec the user's pre-existing statusLine command, piping our stdin.
-
-    :param command: Shell command string from the user's
-        ``~/.claude/settings.json`` ``statusLine.command``.
-    :param stdin_payload: The original stdin we received from Claude
-        Code. Forwarded verbatim so the chained command sees exactly
-        what Claude Code sent.
+    Run a pre-existing statusLine command with the original stdin payload.
+    
+    Parameters:
+    	command (str): The configured statusLine command.
+    	stdin_payload (str): The stdin data received from Claude Code.
+    
     """
     # SECURITY: Command injection via shell=True with user-controlled command.
     # FIX: Tokenize the command string and execute directly without a shell.
